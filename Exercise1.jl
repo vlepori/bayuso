@@ -44,8 +44,3 @@ heatmap(mus,sigs,norm_post',xlabel = "mu",ylabel="sigma")
 map = argmax(norm_post) # maximum a posteriori
 plot!([mus[map[1]]],[sigs[map[2]]] ,  color="red", legend = false, markershape = :x)
 plot!([mus[mle[1]]],[sigs[mle[2]]] ,  color="black", legend = false, markershape = :x)
-
-
-
-
-
