@@ -35,12 +35,12 @@ hline!([sigs[mle[2]]], color="black", legend = false)
 norm_post = zeros(ns_mu,ns_sig)
 for i in 1:ns_mu
     for j in 1:ns_sig
-        logprior =  log_pdf_gamma(sigs[j],2,.3) * log_pdf_uniform(mus[i],10,1000)
+        logprior =  log_pdf_gamma(sigs[j],2,.02) * log_pdf_uniform(mus[i],10,1000)
         loglik = sum(log_pdf_normal.(pandas_bm,mus[i],sigs[j]))
-        norm_post[i,j]= loglik*logprior
+        norm_post[i,j]= loglik+logprior
     end
 end
-heatmap(mus,sigs,norm_post',xlabel = "mu",ylabel="sigma")
+heatmap(mus,sigs,norm_post',xlabel = "mu", ylabel="sigma")
 map = argmax(norm_post) # maximum a posteriori
 plot!([mus[map[1]]],[sigs[map[2]]] ,  color="red", legend = false, markershape = :x)
 plot!([mus[mle[1]]],[sigs[mle[2]]] ,  color="black", legend = false, markershape = :x)
