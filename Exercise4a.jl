@@ -1,10 +1,12 @@
 # Option A: Multiple regression model
 # with hyperpriors
 
-log_pdf_exp(x,lambda) = log(lambda) - lambda*x    
-
 import CSV, DataFrames, Plots
-data_t = CSV.File(read("exercises/bayuso/co2_ozone_data.txt")) |> DataFrames.DataFrame
+include("pdfs.jl")
+include("mcmc.jl")
+
+data = CSV.File(read("global_temperature_NASA_scaled_time_start_1900.txt")) |> DataFrames.DataFrame
+data_t = CSV.File(read("co2_ozone_data.txt")) |> DataFrames.DataFrame
 #data[:,1]=data[:,1].+1880
 Plots.plot(data[:,2],data_t[:,3])
 
@@ -46,14 +48,11 @@ end
 
 init = [13.5, 0, 0, .1, .1] # mu0, a, b, sigma_ab, sigma
 
+test_thetas, test_probs = sample_mcmc(init, kernels4, prior4, lik4, 1000000, se=1000 )
 
-test_thetas, test_probs = sample_mcmc(init, kernels4, prior4, lik4, 10000000, se=1000 )
-
-plot(test_thetas[5:end,:], layout = (5, 1), legend=false, title=["mu0" "a" "b" "sig_ab" "sigma"])
-plot!(size=(1000,1000))
+Plots.plot(test_thetas[5:end,:], layout = (5, 1), legend=false, title=["mu0" "a" "b" "sig_ab" "sigma"])
+Plots.plot!(size=(1000,1000))
 savefig("Ex4.png")
-
-plot(test_probs[5:end,:], layout = (3, 1), legend=false, title=["log prior" "log likelihood" "log unnormalized posterior"])
-histogram(test_thetas[:,4],legend=false, title = "sab")
+Plots.plot(test_probs[5:end,:], layout = (3, 1), legend=false, title=["log prior" "log likelihood" "log unnormalized posterior"])
 
 

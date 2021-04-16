@@ -1,4 +1,9 @@
 import Statistics
+using Plots
+
+include("pdfs.jl")
+include("mcmc.jl")
+
 bears_bm = [67.65, 92.13, 58.92, 87.64, 76.31, 88.86]
 pandas_bm = [84.74, 84.88, 94.60, 96.37, 102.93, 109.11, 125.76]
 
@@ -7,7 +12,7 @@ pandas_bm = [84.74, 84.88, 94.60, 96.37, 102.93, 109.11, 125.76]
 # sigma_b, sigma_p ~ gamma(alpha, beta)
 # alpha, beta ~ Exp(0.1)
 
-# [mu_panda,mu_bear,sigma_panda,sigma_bear,alpha,beta]
+# theta: [mu_panda,mu_bear,sigma_panda,sigma_bear,alpha,beta]
 
 function lik4b(theta)
     lik_p = sum(log_pdf_normal.(pandas_bm,theta[1],theta[3]))
@@ -40,10 +45,8 @@ test_thetas, test_probs = sample_mcmc(init, kernels4b, prior4b, lik4b, 10000000,
 plot(test_thetas[5:end,:], layout = (6, 1), legend=false, title=["mu_panda" "mu_bear" "sig_pd" "sig_br" "alpha" "beta"])
 plot!(size=(1400,1200))
 plot(test_probs[5:end,:], layout = (3, 1), legend=false, title=["log prior" "log likelihood" "log unnormalized posterior"])
-
 savefig("Ex4b.png")
 
 histogram(test_thetas[:,1]-test_thetas[:,2],legend=false, title = "delta_mu")
 Statistics.quantile(test_thetas[:,1]-test_thetas[:,2],[0.01,0.99])
-
 histogram(test_thetas[:,3]-test_thetas[:,4],legend=false, title = "delta_sigma")
